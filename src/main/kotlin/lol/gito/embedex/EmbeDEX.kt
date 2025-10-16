@@ -8,12 +8,9 @@ import com.cobblemon.mod.common.platform.events.PlatformEvents
 import com.cobblemon.mod.common.pokemon.Species
 import com.cobblemon.mod.common.util.asTranslated
 import lol.gito.embedex.web.EmbeDEXApp
-import lol.gito.embedex.web.dto.dex.Classifier
+import lol.gito.embedex.web.dto.dex.DexAbility
+import lol.gito.embedex.web.dto.dex.DexMove
 import net.fabricmc.api.ModInitializer
-import net.minecraft.registry.Registries
-import net.minecraft.registry.RegistryKeys
-import net.minecraft.registry.tag.BiomeTags
-import net.minecraft.registry.tag.TagKey
 import org.http4k.core.Method
 import org.http4k.core.then
 import org.http4k.filter.AllowAll
@@ -33,8 +30,8 @@ object EmbeDEX : ModInitializer {
 
     lateinit var speciesHolder: List<Species>
     lateinit var labelsHolder: List<String>
-    lateinit var abilitiesHolder: List<Classifier>
-    lateinit var movesHolder: List<Classifier>
+    lateinit var abilitiesHolder: List<DexAbility>
+    lateinit var movesHolder: List<DexMove>
 
     private val cors = ServerFilters.Cors(
         CorsPolicy(
@@ -63,17 +60,21 @@ object EmbeDEX : ModInitializer {
             labelsHolder = labels.distinct()
 
             abilitiesHolder = Abilities.all().map { it ->
-                Classifier(
+                DexAbility(
                     it.name,
                     it.displayName.asTranslated().string,
-                    it.description.asTranslated().string
+                    it.description.asTranslated().string,
                 )
             }
             movesHolder = Moves.all().map { it ->
-                Classifier(
+                DexMove(
                     it.name,
                     it.displayName.string,
-                    it.description.string
+                    it.description.string,
+                    it.power,
+                    it.accuracy,
+                    it.critRatio,
+                    it.maxPp
                 )
             }
             LOGGER.info("EmbeDEX received species observable data, ready to start")

@@ -1,15 +1,15 @@
 package lol.gito.embedex.web
 
 import com.cobblemon.mod.common.api.types.ElementalTypes
-import com.cobblemon.mod.common.pokemon.Species
 import com.google.gson.GsonBuilder
 import lol.gito.embedex.EmbeDEX
 import lol.gito.embedex.EmbeDEX.LOGGER
 import lol.gito.embedex.EmbeDEX.labelsHolder
 import lol.gito.embedex.EmbeDEX.speciesHolder
-import lol.gito.embedex.web.dto.dex.Classifier
+import lol.gito.embedex.web.dto.dex.DexAbility
 import lol.gito.embedex.web.dto.dex.DexDetail
 import lol.gito.embedex.web.dto.dex.DexList
+import lol.gito.embedex.web.dto.dex.DexMove
 import net.minecraft.util.Identifier
 import org.http4k.core.Method
 import org.http4k.core.Response
@@ -52,7 +52,7 @@ fun EmbeDEXApp(): RoutingHttpHandler {
     return routes(
         "/dex" bind Method.GET to { request ->
             val page: Int = pageQuery(request) ?: 1
-            val perPage: Int = perPageQuery(request) ?: 40
+            val perPage: Int = perPageQuery(request) ?: 48
             val search: String? = searchQuery(request)
             val labels: List<String>? = labelsQuery(request)
             val types: List<String>? = typesQuery(request)
@@ -61,10 +61,11 @@ fun EmbeDEXApp(): RoutingHttpHandler {
                 .filter { entry ->
                     var matchedLabels = true
                     var matchedTypes = true
-                    if (labels != null) {
+                    var matchedSearch = true
+                    if (labels != null && !labels.isEmpty()) {
                         matchedLabels = entry.labels.containsAll(labels)
                     }
-                    if (types != null) {
+                    if (types != null && !types.isEmpty()) {
                         val entryTypes = mutableListOf<String>()
                         entryTypes.add(entry.primaryType.name)
                         if (entry.secondaryType != null ) {
@@ -72,8 +73,11 @@ fun EmbeDEXApp(): RoutingHttpHandler {
                         }
                         matchedTypes = types.any { entryTypes.contains(it) }
                     }
+                    if (search != null && !search.isEmpty()) {
+                        matchedSearch = entry.translatedName.string.lowercase().contains(search.lowercase())
+                    }
 
-                    return@filter matchedLabels && matchedTypes
+                    return@filter matchedLabels && matchedTypes && matchedSearch
                 }
                 .sortedBy { it.nationalPokedexNumber }
                 .chunked(perPage)
@@ -106,13 +110,13 @@ fun EmbeDEXApp(): RoutingHttpHandler {
         },
         "/abilities" bind Method.GET to { request ->
             Response(OK).with(
-                gson.autoBody<List<Classifier>>().toLens() of EmbeDEX.abilitiesHolder
+                gson.autoBody<List<DexAbility>>().toLens() of EmbeDEX.abilitiesHolder
             )
 
         },
         "/moves" bind Method.GET to { request ->
             Response(OK).with(
-                gson.autoBody<List<Classifier>>().toLens() of EmbeDEX.movesHolder
+                gson.autoBody<List<DexMove>>().toLens() of EmbeDEX.movesHolder
             )
 
         }
