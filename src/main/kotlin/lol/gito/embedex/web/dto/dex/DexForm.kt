@@ -33,7 +33,7 @@ data class DexForm(
                         when (item) {
                             is ItemDropEntry -> ItemDrops(
                                 item.item.toString(),
-                                item.item.toTranslationKey().asTranslated().string,
+                                "item.${item.item.toTranslationKey()}".asTranslated().string,
                                 item.percentage,
                                 item.components?.let {
                                     val res = HashMap<String, Any?>()
