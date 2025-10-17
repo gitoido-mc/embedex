@@ -48,8 +48,10 @@ dependencies {
 
 	include(implementation(platform("org.http4k:http4k-bom:6.19.0.0"))!!)
 	include(implementation("org.http4k:http4k-core")!!)
+	include(implementation("org.http4k:http4k-realtime-core")!!)
 	include(implementation("org.http4k:http4k-server-undertow")!!)
 	include(implementation("org.http4k:http4k-ops-resilience4j")!!)
+	include(implementation("org.http4k:http4k-format-core")!!)
 	include(implementation("org.http4k:http4k-format-gson")!!)
 
 	// Mod deps
