@@ -46,11 +46,11 @@ dependencies {
 	minecraft("com.mojang:minecraft:${properties["minecraft_version"]}")
 	mappings("net.fabricmc:yarn:${properties["yarn_mappings"]}:v2")
 
-	implementation(platform("org.http4k:http4k-bom:6.19.0.0"))
-	implementation("org.http4k:http4k-core")
-	implementation("org.http4k:http4k-server-undertow")
-	implementation("org.http4k:http4k-format-gson")
-	implementation("org.http4k.pro:http4k-tools-hotreload")
+	include(implementation(platform("org.http4k:http4k-bom:6.19.0.0"))!!)
+	include(implementation("org.http4k:http4k-core")!!)
+	include(implementation("org.http4k:http4k-server-undertow")!!)
+	include(implementation("org.http4k:http4k-ops-resilience4j")!!)
+	include(implementation("org.http4k:http4k-format-gson")!!)
 
 	// Mod deps
 	modImplementation("net.fabricmc:fabric-loader:${properties["loader_version"]}")
