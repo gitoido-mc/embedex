@@ -38,5 +38,4 @@ jobs:
           name: 'EmbeDEX nightly release $$'
           prerelease: true
           body: 'TODO: Add nightly release notes'
-          files: |
-            build/libs/!(*-all).jar
+          files: build/libs/!(*-all).jar
