@@ -28,3 +28,14 @@ jobs:
         with:
           name: Artifacts
           path: build/libs/
+      - name: Update nightly release
+        uses: andelf/nightly-release@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: nightly
+          name: 'EmbeDEX nightly release $$'
+          prerelease: true
+          body: 'TODO: Add nightly release notes'
+          files: |
+            build/libs/*
