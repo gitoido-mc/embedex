@@ -1,6 +1,7 @@
 package lol.gito.embedex.web.dto.dex
 
 import com.cobblemon.mod.common.pokemon.Species
+import lol.gito.embedex.EmbeDEX
 
 data class DexListItem(
     val dex: Int,
@@ -9,7 +10,7 @@ data class DexListItem(
     val primaryType: String,
     val secondaryType: String?,
     val forms: Int,
-    val labels: HashSet<String>
+    val labels: List<String>
 ) {
     companion object {
         fun fromSpecies(species: Species): DexListItem = DexListItem(
@@ -19,7 +20,7 @@ data class DexListItem(
             species.primaryType.name,
             species.secondaryType?.name,
             species.forms.count(),
-            species.labels
+            EmbeDEX.speciesLabelsHolder.getOrElse(species.resourceIdentifier.path) { emptyList() }
         )
     }
 }

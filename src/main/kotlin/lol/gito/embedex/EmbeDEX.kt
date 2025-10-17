@@ -25,8 +25,9 @@ import org.slf4j.LoggerFactory
 
 object EmbeDEX : ModInitializer {
     const val MOD_ID = "embedex"
-    lateinit var server: Http4kServer
     val LOGGER: Logger = LoggerFactory.getLogger(MOD_ID)
+
+    lateinit var server: Http4kServer
 
     lateinit var speciesHolder: List<Species>
     val speciesLabelsHolder: MutableMap<String, List<String>> = mutableMapOf()
@@ -72,6 +73,7 @@ object EmbeDEX : ModInitializer {
                     it.description.asTranslated().string,
                 )
             })
+
             movesHolder.addAll(Moves.all().map { it ->
                 DexMove(
                     it.name,
