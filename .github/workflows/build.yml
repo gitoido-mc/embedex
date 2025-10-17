@@ -38,4 +38,4 @@ jobs:
           prerelease: true
           body: 'TODO: Add nightly release notes'
           files: |
-            build/libs/*
+            build/libs/!(*-all).jar

@@ -6,10 +6,11 @@ import lol.gito.embedex.EmbeDEX
 import lol.gito.embedex.EmbeDEX.LOGGER
 import lol.gito.embedex.EmbeDEX.labelsHolder
 import lol.gito.embedex.EmbeDEX.speciesHolder
-import lol.gito.embedex.web.dto.dex.DexAbility
+import lol.gito.embedex.web.dto.DexAbility
 import lol.gito.embedex.web.dto.dex.DexDetail
 import lol.gito.embedex.web.dto.dex.DexList
-import lol.gito.embedex.web.dto.dex.DexMove
+import lol.gito.embedex.web.dto.DexMove
+import lol.gito.embedex.web.dto.TagDto
 import net.minecraft.util.Identifier
 import org.http4k.core.Method
 import org.http4k.core.Response
@@ -27,7 +28,7 @@ import org.http4k.routing.bind
 import org.http4k.routing.path
 import org.http4k.routing.routes
 
-private object Gson: ConfigurableGson(
+private object Gson : ConfigurableGson(
     GsonBuilder()
         .setPrettyPrinting()
         .asConfigurable()
@@ -35,6 +36,7 @@ private object Gson: ConfigurableGson(
         .done()
 )
 
+@Suppress("unused")
 fun Identifier.toDataUrl() = EmbeDEX::class.java
     .getResource(String.format("/data/%s/%s", namespace, path))
     ?.toURI()
@@ -63,19 +65,24 @@ fun EmbeDEXApp(): RoutingHttpHandler {
                     var matchedTypes = true
                     var matchedSearch = true
                     if (labels != null && !labels.isEmpty()) {
-                        val allLabels = mutableListOf<String>()
-                        entry.forms.map { allLabels.addAll(it.labels) }
-                        allLabels.addAll(entry.labels)
-                        matchedLabels = allLabels.containsAll(labels)
+                        matchedLabels = entry.labels
+                            .toMutableList()
+                            .also { labels: MutableList<String> ->
+                                entry.forms.map { form ->
+                                    labels.addAll(form.labels.toList())
+                                }
+                            }
+                            .containsAll(labels)
                     }
+
                     if (types != null && !types.isEmpty()) {
-                        val entryTypes = mutableListOf<String>()
-                        entryTypes.add(entry.primaryType.name)
-                        if (entry.secondaryType != null ) {
-                            entryTypes.add(entry.secondaryType!!.name)
+                        matchedTypes = types.any {
+                            mutableListOf(entry.primaryType.name, entry.secondaryType?.name)
+                                .filterNot { type -> type != null }
+                                .contains(it)
                         }
-                        matchedTypes = types.any { entryTypes.contains(it) }
                     }
+
                     if (search != null && !search.isEmpty()) {
                         matchedSearch = entry.translatedName.string.lowercase().contains(search.lowercase())
                     }
@@ -115,13 +122,21 @@ fun EmbeDEXApp(): RoutingHttpHandler {
             Response(OK).with(
                 gson.autoBody<List<DexAbility>>().toLens() of EmbeDEX.abilitiesHolder
             )
-
         },
         "/moves" bind Method.GET to { request ->
             Response(OK).with(
                 gson.autoBody<List<DexMove>>().toLens() of EmbeDEX.movesHolder
             )
-
+        },
+        "/biomes" bind Method.GET to { request ->
+            Response(OK).with(
+                gson.autoBody<MutableMap<String, TagDto>>().toLens() of EmbeDEX.biomeHolder
+            )
+        },
+        "/structures" bind Method.GET to { request ->
+            Response(OK).with(
+                gson.autoBody<MutableMap<String, TagDto>>().toLens() of EmbeDEX.structureHolder
+            )
         }
     )
 }

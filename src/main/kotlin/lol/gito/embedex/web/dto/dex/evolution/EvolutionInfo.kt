@@ -11,7 +11,6 @@ import com.cobblemon.mod.common.registry.BlockTagCondition
 import com.cobblemon.mod.common.registry.ItemIdentifierCondition
 import com.cobblemon.mod.common.registry.ItemTagCondition
 import lol.gito.embedex.EmbeDEX
-import lol.gito.embedex.web.dto.dex.evolution.requirement.RequirementHolder
 
 data class EvolutionInfo(
     val id: String,

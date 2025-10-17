@@ -1,4 +1,4 @@
-package lol.gito.embedex.web.dto.dex
+package lol.gito.embedex.web.dto
 
 // Package that holds DTOs for various simple representations
 
@@ -11,4 +11,15 @@ data class DexMove(
     val accuracy: Double,
     val critRatio: Double,
     val maxPp: Int
+)
+
+data class TagDto(
+    val id: String,
+    val name: String? = null,
+    val items: List<IdentifierDto>
+)
+
+data class IdentifierDto (
+    val id: String,
+    val name: String? = null,
 )

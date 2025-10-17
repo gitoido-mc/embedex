@@ -1,12 +1,41 @@
-package lol.gito.embedex.web.dto.dex.evolution.requirement
+package lol.gito.embedex.web.dto.dex.evolution
 
 import com.cobblemon.mod.common.api.pokemon.evolution.requirement.EvolutionRequirement
 import com.cobblemon.mod.common.api.spawning.TimeRange
-import com.cobblemon.mod.common.pokemon.evolution.requirements.*
-import com.cobblemon.mod.common.registry.*
+import com.cobblemon.mod.common.pokemon.evolution.requirements.AnyRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.AreaRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.AttackDefenceRatioRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.BattleCriticalHitsRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.BiomeRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.BlocksTraveledRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.DamageTakenRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.DefeatRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.FriendshipRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.HeldItemRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.LevelRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.MoonPhaseRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.MoveSetRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.MoveTypeRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.PartyMemberRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.PlayerHasAdvancementRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.PokemonPropertiesRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.PropertyRangeRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.RecoilRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.StatCompareRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.StatEqualRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.StructureRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.TimeRangeRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.UseMoveRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.WeatherRequirement
+import com.cobblemon.mod.common.pokemon.evolution.requirements.WorldRequirement
+import com.cobblemon.mod.common.registry.BiomeIdentifierCondition
+import com.cobblemon.mod.common.registry.BiomeTagCondition
+import com.cobblemon.mod.common.registry.ItemIdentifierCondition
+import com.cobblemon.mod.common.registry.ItemTagCondition
+import com.cobblemon.mod.common.registry.StructureIdentifierCondition
+import com.cobblemon.mod.common.registry.StructureTagCondition
 
 abstract class RequirementHolder(open val variant: String) {
-    class Dummy() : RequirementHolder("dummy")
     data class IntegerHolder(@Transient override val variant: String, val amount: Int) : RequirementHolder(variant)
     data class StringHolder(@Transient override val variant: String, val value: String) : RequirementHolder(variant)
     data class Any(val requirements: List<RequirementHolder>) : RequirementHolder("any")
@@ -142,7 +171,7 @@ abstract class RequirementHolder(open val variant: String) {
 
             is TimeRangeRequirement -> StringHolder(
                 "time_range",
-                TimeRange.timeRanges.firstNotNullOfOrNull { (key, value) ->
+                TimeRange.Companion.timeRanges.firstNotNullOfOrNull { (key, value) ->
                     val min = requirement.range.ranges.first().first
                     val max = requirement.range.ranges.first().last
                     if (key != "any" && value.contains(min) && value.contains(max)) {
