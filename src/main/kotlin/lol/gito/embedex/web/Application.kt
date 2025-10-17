@@ -63,7 +63,10 @@ fun EmbeDEXApp(): RoutingHttpHandler {
                     var matchedTypes = true
                     var matchedSearch = true
                     if (labels != null && !labels.isEmpty()) {
-                        matchedLabels = entry.labels.containsAll(labels)
+                        val allLabels = mutableListOf<String>()
+                        entry.forms.map { allLabels.addAll(it.labels) }
+                        allLabels.addAll(entry.labels)
+                        matchedLabels = allLabels.containsAll(labels)
                     }
                     if (types != null && !types.isEmpty()) {
                         val entryTypes = mutableListOf<String>()

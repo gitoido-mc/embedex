@@ -29,9 +29,10 @@ object EmbeDEX : ModInitializer {
     val LOGGER: Logger = LoggerFactory.getLogger(MOD_ID)
 
     lateinit var speciesHolder: List<Species>
-    lateinit var labelsHolder: List<String>
-    lateinit var abilitiesHolder: List<DexAbility>
-    lateinit var movesHolder: List<DexMove>
+    val speciesLabelsHolder: MutableMap<String, List<String>> = mutableMapOf()
+    val labelsHolder: MutableList<String> = mutableListOf()
+    val movesHolder: MutableList<DexMove> = mutableListOf()
+    val abilitiesHolder: MutableList<DexAbility> = mutableListOf()
 
     private val cors = ServerFilters.Cors(
         CorsPolicy(
@@ -51,22 +52,27 @@ object EmbeDEX : ModInitializer {
 
             val labels = mutableListOf<String>()
             speciesHolder.map { species ->
-                labels.addAll(species.labels.toList())
+                val speciesLabels = mutableListOf<String>()
+
+                speciesLabels.addAll(species.labels.toList())
+
                 species.forms.map { form ->
-                    labels.addAll(form.labels.toList())
+                    speciesLabels.addAll(form.labels.toList())
                 }
+                speciesLabelsHolder.put(species.resourceIdentifier.path, speciesLabels.distinct())
+                labels.addAll(speciesLabels.distinct())
             }
 
-            labelsHolder = labels.distinct()
+            labelsHolder.addAll(labels.distinct())
 
-            abilitiesHolder = Abilities.all().map { it ->
+            abilitiesHolder.addAll(Abilities.all().map { it ->
                 DexAbility(
                     it.name,
                     it.displayName.asTranslated().string,
                     it.description.asTranslated().string,
                 )
-            }
-            movesHolder = Moves.all().map { it ->
+            })
+            movesHolder.addAll(Moves.all().map { it ->
                 DexMove(
                     it.name,
                     it.displayName.string,
@@ -76,7 +82,8 @@ object EmbeDEX : ModInitializer {
                     it.critRatio,
                     it.maxPp
                 )
-            }
+            })
+
             LOGGER.info("EmbeDEX received species observable data, ready to start")
         }
 
