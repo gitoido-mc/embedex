@@ -18,7 +18,7 @@ import org.http4k.filter.CorsPolicy
 import org.http4k.filter.OriginPolicy
 import org.http4k.filter.ServerFilters
 import org.http4k.server.Http4kServer
-import org.http4k.server.Netty
+import org.http4k.server.Undertow
 import org.http4k.server.asServer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -46,7 +46,7 @@ object EmbeDEX : ModInitializer {
     override fun onInitialize() {
         LOGGER.info("EmbeDEX initializing..")
 
-        server = cors.then(EmbeDEXApp()).asServer(Netty(25585))
+        server = cors.then(EmbeDEXApp()).asServer(Undertow(25585))
 
         PokemonSpecies.observable.subscribe(Priority.LOWEST) {
             speciesHolder = PokemonSpecies.implemented.toList()

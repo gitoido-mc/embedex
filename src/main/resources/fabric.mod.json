@@ -20,21 +20,9 @@
 				"value": "lol.gito.embedex.EmbeDEX",
 				"adapter": "kotlin"
 			}
-		],
-		"client": [
-			{
-				"value": "lol.gito.embedex.EmbeDEXClient",
-				"adapter": "kotlin"
-			}
 		]
 	},
-	"mixins": [
-		"embedex.mixins.json",
-		{
-			"config": "embedex.client.mixins.json",
-			"environment": "client"
-		}
-	],
+	"mixins": [],
 	"depends": {
 		"fabricloader": ">=0.16.9",
 		"minecraft": "~1.21.1",

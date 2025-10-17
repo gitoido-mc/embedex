@@ -1,5 +1,3 @@
-import java.net.URI
-
 rootProject.name = "EmbeDEX [Cobblemon]"
 
 pluginManagement {
